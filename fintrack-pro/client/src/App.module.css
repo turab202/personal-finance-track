@@ -1,0 +1,133 @@
+/* App.module.css */
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+}
+
+.logoutBtn {
+  background-color: #c62828;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profileInfo,
+.summary,
+.transactions {
+  margin-top: 30px;
+}
+
+.summaryCards {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1;
+  min-width: 150px;
+  background-color: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.card h3 {
+  margin-bottom: 8px;
+}
+
+.income {
+  color: green;
+}
+
+.expenses {
+  color: red;
+}
+
+.balance {
+  color: #2e7d32;
+}
+
+.transactionTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactionTable th,
+.transactionTable td {
+  padding: 12px 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.negative {
+  color: red;
+}
+
+.positive {
+  color: green;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .summaryCards {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+  }
+
+  .transactionTable th,
+  .transactionTable td {
+    font-size: 0.9rem;
+    padding: 10px 6px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .logoutBtn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .transactionTable th,
+  .transactionTable td {
+    font-size: 0.85rem;
+  }
+
+  .header h1 {
+    font-size: 1.2rem;
+  }
+}
