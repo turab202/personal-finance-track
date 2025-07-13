@@ -11,37 +11,37 @@ export default function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+  // Register.js - Updated handleSubmit function
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setSuccess('');
 
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
+  try {
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/register`, {
 
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-      if (!res.ok) throw new Error(data.message || 'Registration failed');
-
-      setSuccess('Registration successful! Please login.');
-      // Optionally reset fields
-      setName('');
-      setEmail('');
-      setPassword('');
-
-      // Redirect after short delay (2s)
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-    } catch (err) {
-      setError(err.message);
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Registration failed');
     }
-  };
+
+    const data = await res.json();
+    setSuccess('Registration successful! Redirecting to login...');
+    
+    // Wait 2 seconds before redirecting
+    setTimeout(() => {
+      navigate('/login');
+    }, 2000);
+  } catch (err) {
+    setError(err.message);
+    console.error('Registration error:', err);
+  }
+};
 
   return (
     <div className={styles.container}>

@@ -4,60 +4,90 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localError, setLocalError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setIsSubmitting(true);
+    clearError();
+    setLocalError('');
 
     try {
-   const res = await fetch('http://localhost:5000/api/auth/login', {
+      // Basic client-side validation
+      if (!email.trim() || !password.trim()) {
+        throw new Error('Email and password are required');
+      }
 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
-
-      if (!res.ok) throw new Error(data.message || 'Login failed');
-
-      login(data.user, data.token);
+      // Use the login function from AuthContext
+      await login({ email: email.trim(), password: password.trim() });
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message);
+      // Handle different error types
+      if (err.message === 'Email and password are required') {
+        setLocalError(err.message);
+      } else {
+        // AuthContext will handle and set the API error
+        console.error('Login error:', err);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  // Combine errors from both local validation and AuthContext
+  const displayError = localError || authError;
 
   return (
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Login to FinTrack Pro</h2>
+        
         <input
           className={styles.input}
           type="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
+          disabled={isSubmitting}
         />
+        
         <input
           className={styles.input}
           type="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          disabled={isSubmitting}
         />
-        <button className={styles.button} type="submit">Login</button>
-        {error && <p className={styles.error}>{error}</p>}
-        <p>
+        
+        <button 
+          className={styles.button} 
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Logging in...' : 'Login'}
+        </button>
+        
+        {displayError && (
+          <p className={styles.error}>
+            {displayError}
+            {displayError === 'Invalid credentials' && (
+              <span className={styles.suggestion}>
+                <br />Check your email and password or <Link to="/register">register</Link> if you don't have an account
+              </span>
+            )}
+          </p>
+        )}
+        
+        <p className={styles.registerPrompt}>
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
       </form>
