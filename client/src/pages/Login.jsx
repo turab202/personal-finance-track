@@ -19,20 +19,16 @@ export default function Login() {
     setLocalError('');
 
     try {
-      // Basic client-side validation
       if (!email.trim() || !password.trim()) {
         throw new Error('Email and password are required');
       }
 
-      // Use the login function from AuthContext
       await login({ email: email.trim(), password: password.trim() });
       navigate('/dashboard');
     } catch (err) {
-      // Handle different error types
       if (err.message === 'Email and password are required') {
         setLocalError(err.message);
       } else {
-        // AuthContext will handle and set the API error
         console.error('Login error:', err);
       }
     } finally {
@@ -40,14 +36,13 @@ export default function Login() {
     }
   };
 
-  // Combine errors from both local validation and AuthContext
   const displayError = localError || authError;
 
   return (
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Login to FinTrack Pro</h2>
-        
+
         <input
           className={styles.input}
           type="email"
@@ -57,7 +52,7 @@ export default function Login() {
           required
           disabled={isSubmitting}
         />
-        
+
         <input
           className={styles.input}
           type="password"
@@ -67,7 +62,7 @@ export default function Login() {
           required
           disabled={isSubmitting}
         />
-        
+
         <button 
           className={styles.button} 
           type="submit"
@@ -75,18 +70,18 @@ export default function Login() {
         >
           {isSubmitting ? 'Logging in...' : 'Login'}
         </button>
-        
+
         {displayError && (
           <p className={styles.error}>
             {displayError}
             {displayError === 'Invalid credentials' && (
               <span className={styles.suggestion}>
-                <br />Check your email and password or <Link to="/register">register</Link> if you don't have an account
+                <br />Check your email and password or <Link to="/register">register</Link> if you don't have an account.
               </span>
             )}
           </p>
         )}
-        
+
         <p className={styles.registerPrompt}>
           Don't have an account? <Link to="/register">Register here</Link>
         </p>

@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
 
   const attemptTokenRefresh = async (oldToken) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/refresh', {
+const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +95,8 @@ export function AuthProvider({ children }) {
         throw new Error('Email and password cannot be empty');
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

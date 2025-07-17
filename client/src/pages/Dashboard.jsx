@@ -43,7 +43,17 @@ export default function Dashboard() {
 
   // Enhanced data calculations
   const { income, expenses, balance, categoryData, monthlyTrends, topTransactions } = useMemo(() => {
-    if (loading || !filtered.length) return {};
+   if (loading || !filtered.length) {
+  return {
+    income: 0,
+    expenses: 0,
+    balance: 0,
+    categoryData: [],
+    monthlyTrends: [],
+    topTransactions: []
+  };
+}
+
     
     // Calculate income, expenses, balance
     const income = filtered.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);

@@ -108,7 +108,7 @@ export default function AddTransaction({ onAdd }) {
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="e.g. Salary, Groceries"
+              placeholder="e.g. Salary, Transport"
               className={styles.input}
               required
             />
