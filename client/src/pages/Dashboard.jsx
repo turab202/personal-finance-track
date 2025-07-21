@@ -10,11 +10,7 @@ import { format, subMonths, eachDayOfInterval, isSameDay } from 'date-fns';
 import TrendChart from '../components/TrendChart';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import BudgetTracker from '../components/BudgetTracker';
-import GoalPlanner from '../components/GoalPlanner';
-import HealthScore from '../components/HealthScore';
-import NetWorthTracker from '../components/NetWorthTracker';
-import SuccessMeter from '../components/SuccessMeter';
+
 
 // Modern color palette
 const COLORS = {
