@@ -8,12 +8,11 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize auth state from localStorage
   useEffect(() => {
     const initializeAuth = async () => {
       const storedUser = localStorage.getItem('user');
       const storedToken = localStorage.getItem('token');
-      
+
       if (storedUser && storedToken) {
         if (isTokenValid(storedToken)) {
           setUser(JSON.parse(storedUser));
@@ -43,7 +42,7 @@ export function AuthProvider({ children }) {
 
   const attemptTokenRefresh = async (oldToken) => {
     try {
-const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,6 +56,7 @@ const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refr
         localStorage.setItem('token', data.token);
         return true;
       }
+
       return false;
     } catch (error) {
       console.error('Token refresh failed:', error);
@@ -71,47 +71,36 @@ const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refr
     localStorage.removeItem('token');
   };
 
-  // Modified login function with better validation
   const login = async (credentials) => {
     try {
-      // First check if credentials object exists
-      if (!credentials) {
-        throw new Error('Credentials are required');
-      }
-
-      // Destructure after verifying credentials exists
+      if (!credentials) throw new Error('Credentials are required');
       const { email, password } = credentials;
-      
-      // Now check for empty values
-      if (!email || !password) {
-        throw new Error('Email and password are required');
-      }
 
-      // Trim and validate
+      if (!email || !password) throw new Error('Email and password are required');
+
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
-      
+
       if (!trimmedEmail || !trimmedPassword) {
         throw new Error('Email and password cannot be empty');
       }
 
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`;
+      console.log('🔗 Logging in via:', apiUrl);
 
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email: trimmedEmail, 
-          password: trimmedPassword 
-        })
+        body: JSON.stringify({ email: trimmedEmail, password: trimmedPassword })
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Login failed');
       }
 
       const data = await response.json();
-      
+
       if (!data.token || !data.user) {
         throw new Error('Invalid server response');
       }
@@ -136,7 +125,7 @@ const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refr
 
   const authFetch = async (url, options = {}) => {
     if (!token) throw new Error('No authentication token available');
-    
+
     const headers = {
       ...options.headers,
       'Authorization': `Bearer ${token}`,
@@ -160,12 +149,12 @@ const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refr
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      token, 
+    <AuthContext.Provider value={{
+      user,
+      token,
       isLoading,
       error,
-      login, 
+      login,
       logout,
       authFetch,
       isAuthenticated: !!token && isTokenValid(token),

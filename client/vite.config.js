@@ -8,7 +8,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:5000', // your backend server
+      '/api': 'https://personal-finance-track-ox0v.onrender.com', 
     },
   },
 });
